@@ -46,7 +46,7 @@ const Home = () => {
                 onClickFunc={handleVoteNow}
                 text='Vote Now'
               />
-              <button className='px-6 py-2 border border-[#333333] text-white rounded-lg hover:border-[#9D5CFF] hover:bg-[#9D5CFF]/10 transition-all duration-300 font-semibold'>
+              <button className='px-6 py-2 border border-[#333333] text-white rounded-lg hover:border-[#9D5CFF] hover:bg-[#9D5CFF]/10 transition-all duration-300 font-semibold cursor-pointer'>
                 Learn More
               </button>
             </div>

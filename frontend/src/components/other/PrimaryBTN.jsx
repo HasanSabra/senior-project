@@ -41,6 +41,7 @@ const PrimaryBTN = ({ text, onClickFunc, disabled, type = "button" }) => {
         disabled:hover:bg-[#6C2BD9]
         min-w-[100px]
         select-none
+        cursor-pointer
       `}
       aria-disabled={disabled}
     >
