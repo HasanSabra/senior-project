@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 
 import Header from "@/components/other/Header";
 import PrimaryBTN from "@/components/other/PrimaryBTN";
@@ -8,8 +9,10 @@ import ListingCard from "@/components/landing/ListingCard";
 import Footer from "@/components/other/Footer";
 
 const Home = () => {
+  const router = useRouter();
+
   const handleVoteNow = () => {
-    console.log("Vote Now clicked");
+    router.push("/signup");
   };
 
   return (

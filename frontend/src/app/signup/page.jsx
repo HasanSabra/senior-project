@@ -1,7 +1,7 @@
 "use client";
 
 import Header from "@/components/Other/Header";
-// import { AUTH_API } from "@/lib/api";
+import { AUTH_API } from "@/lib/api";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,58 +17,58 @@ const Register = () => {
   const router = useRouter();
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
-    // setError(null);
-    // setLoading(true);
-    // // Client-side validation
-    // if (password !== confirmPassword) {
-    //   setError("Passwords do not match");
-    //   setLoading(false);
-    //   return;
-    // }
-    // if (pin.length !== 12) {
-    //   setError("Voter PIN must be exactly 12 digits");
-    //   setLoading(false);
-    //   return;
-    // }
-    // try {
-    //   console.log("Sending register data:", {
-    //     pin,
-    //     email,
-    //     password,
-    //     confirmPassword,
-    //   });
-    //   const res = await AUTH_API.post("/auth/signup", {
-    //     pin,
-    //     email,
-    //     password,
-    //     confirmPassword,
-    //   });
-    //   console.log(res);
-    //   if (res.status === 400) {
-    //     setError(res.data.message);
-    //     setTimeout(() => {
-    //       router.push(res.data.redirectTo);
-    //     }, 3000);
-    //     return;
-    //   }
-    //   if (res.status !== 200) {
-    //     setError(res.data.message);
-    //     return;
-    //   }
-    //   if (res.status === 200) {
-    //     setMessage(res.data.message);
-    //     setTimeout(() => {
-    //       router.push("/login");
-    //     }, 5000);
-    //   }
-    // } catch (err) {
-    //   setError(
-    //     err.response?.data?.message || "Failed to register. Please try again.",
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+    if (pin.length !== 12) {
+      setError("Voter PIN must be exactly 12 digits");
+      setLoading(false);
+      return;
+    }
+    try {
+      console.log("Sending register data:", {
+        pin,
+        email,
+        password,
+        confirmPassword,
+      });
+      const res = await AUTH_API.post("/signup", {
+        pin,
+        email,
+        password,
+        confirmPassword,
+      });
+      console.log(res);
+      if (res.status === 400) {
+        setError(res.data.message);
+        setTimeout(() => {
+          router.push(res.data.redirectTo);
+        }, 3000);
+        return;
+      }
+      if (res.status !== 200) {
+        setError(res.data.message);
+        return;
+      }
+      if (res.status === 200) {
+        setMessage(res.data.message);
+        setTimeout(() => {
+          router.push("/login");
+        }, 5000);
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Failed to register. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

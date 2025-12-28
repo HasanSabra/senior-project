@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-// import { AUTH_API } from "@/lib/api";
+import { AUTH_API } from "@/lib/api";
 
 const VerifyEmail = () => {
   const searchParams = useSearchParams();
@@ -15,44 +15,44 @@ const VerifyEmail = () => {
   const router = useRouter();
 
   const verifyEmail = async () => {
-    // try {
-    //   const res = await AUTH_API.post(`/auth/verify-email?token=${token}`);
-    //   if (res.status === 200) {
-    //     setSuccess(true);
-    //     setMessage(
-    //       "Your email has been successfully verified! You can now log in.",
-    //     );
-    //     setStatus("redirecting");
-    //     setTimeout(() => {
-    //       router.push("/login");
-    //     }, 3000);
-    //   }
-    //   if (res.status !== 200) {
-    //     setSuccess(false);
-    //     setMessage(res.data.message);
-    //     setStatus("error");
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    //   setStatus("error");
-    //   setMessage(
-    //     "An error occurred during verification. Please try again later.",
-    //   );
-    //   setSuccess(false);
-    // }
+    try {
+      const res = await AUTH_API.post(`/verify-email?token=${token}`);
+      if (res.status === 200) {
+        setSuccess(true);
+        setMessage(
+          "Your email has been successfully verified! You can now log in.",
+        );
+        setStatus("redirecting");
+        setTimeout(() => {
+          router.push("/login");
+        }, 3000);
+      }
+      if (res.status !== 200) {
+        setSuccess(false);
+        setMessage(res.data.message);
+        setStatus("error");
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+      setMessage(
+        "An error occurred during verification. Please try again later.",
+      );
+      setSuccess(false);
+    }
   };
 
-  // useEffect(() => {
-  //   if (!token) {
-  //     setStatus("error");
-  //     setMessage(
-  //       "Invalid verification link. Please check your email and try again.",
-  //     );
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!token) {
+      setStatus("error");
+      setMessage(
+        "Invalid verification link. Please check your email and try again.",
+      );
+      return;
+    }
 
-  //   verifyEmail();
-  // }, [token]);
+    verifyEmail();
+  }, [token]);
 
   return (
     <main className='min-h-screen bg-[#0E0E0E] flex flex-col justify-center px-6 py-12 sm:py-16'>

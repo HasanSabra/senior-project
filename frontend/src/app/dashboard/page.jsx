@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-// const jsCookie = require("js-cookie");
+import Cookies from "js-cookie";
 
 const DashboardRedirect = () => {
   const [message, setMessage] = useState("Loading... Please wait.");
@@ -11,29 +11,35 @@ const DashboardRedirect = () => {
   const router = useRouter();
 
   const handleLogic = () => {
-    // setTimeout(() => {
-    //   try {
-    //     const user = JSON.parse(jsCookie.get("user"));
-    //     const routes = {
-    //       admin: "/admin/dashboard",
-    //       voter: "/vote",
-    //       parliamentary_representative: "/vote/rep",
-    //       municipal_member: "/vote/mayor",
-    //       non_voter: "/vote/results"
-    //     };
-    //     const route = routes[user.role];
-    //     if (route) {
-    //       router.push(route);
-    //     } else {
-    //       throw new Error("Invalid user role");
-    //     }
-    //   } catch (error) {
-    //     console.error("Invalid user", error);
-    //     router.push("/login");
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }, 3000);
+    setTimeout(() => {
+      try {
+        let user = null;
+        const userCookie = Cookies.get("user");
+        if (userCookie) {
+          user = JSON.parse(userCookie);
+        } else {
+          return;
+        }
+        const routes = {
+          admin: "/admin/dashboard",
+          voter: "/vote",
+          parliamentary_representative: "/vote/rep",
+          municipal_member: "/vote/mayor",
+          non_voter: "/vote/results",
+        };
+        const route = routes[user?.role];
+        if (route) {
+          router.push(route);
+        } else {
+          throw new Error("Invalid user role");
+        }
+      } catch (error) {
+        console.error("Invalid user", error);
+        router.push("/login");
+      } finally {
+        setLoading(false);
+      }
+    }, 3000);
   };
 
   useEffect(() => {

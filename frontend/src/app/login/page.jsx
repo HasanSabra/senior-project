@@ -3,7 +3,7 @@
 import Header from "@/components/Other/Header";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// import { AUTH_API } from "@/lib/api";
+import { AUTH_API } from "@/lib/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,25 +14,25 @@ const Login = () => {
   const router = useRouter();
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
-    // setError(null);
-    // setLoading(true);
-    // try {
-    //   const res = await AUTH_API.post("/auth/login", {
-    //     email,
-    //     password,
-    //   });
-    //   if (res.status !== 200) {
-    //     setError(res.data.message);
-    //     return;
-    //   }
-    //   console.log("Login successful:", res.data);
-    //   router.push("/dashboard");
-    // } catch (err) {
-    //   setError(err.response?.data?.message || "An error occurred during login");
-    // } finally {
-    //   setLoading(false);
-    // }
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await AUTH_API.post("/login", {
+        email,
+        password,
+      });
+      if (res.status !== 200) {
+        setError(res.data.message);
+        return;
+      }
+      console.log("Login successful:", res.data);
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "An error occurred during login");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

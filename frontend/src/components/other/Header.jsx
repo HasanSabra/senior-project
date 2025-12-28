@@ -1,15 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+
+import { AUTH_API } from "@/lib/api";
 import PrimaryBTN from "./PrimaryBTN";
+import Link from "next/link";
 
 const Header = () => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const userData = Cookies.get("user");
+
+    if (userData) {
+      setUser(JSON.parse(userData));
+      setToken(true);
+    }
+  }, []);
+
   const handleLogin = () => {
-    console.log("Login clicked");
-    // Add your login logic here
+    router.push("/login");
+  };
+
+  const handleLogout = async () => {
+    const res = await AUTH_API.post("/logout");
+
+    if (res.data.success) {
+      router.push("/login");
+    }
   };
 
   const handleHelp = () => {
     console.log("Help clicked");
-    // Add help navigation logic here
   };
 
   return (
@@ -17,9 +42,12 @@ const Header = () => {
       {/* Left Section */}
       <div className='flex items-center gap-12'>
         {/* Logo */}
-        <h1 className='font-bold text-2xl cursor-pointer hover:text-[#CCCCCC] transition-colors'>
+        <Link
+          className='font-bold text-2xl cursor-pointer hover:text-[#CCCCCC] transition-colors'
+          href={"/"}
+        >
           WiseVote
-        </h1>
+        </Link>
 
         {/* Municipality & Timer */}
         <div className='flex items-center gap-4 bg-[#1A1A1A] px-4 py-2 rounded-lg border border-[#333333]'>
@@ -60,13 +88,20 @@ const Header = () => {
           <div className='flex items-center gap-2 bg-[#1A1A1A] px-3 py-2 rounded-lg border border-[#333333]'>
             <div className='w-2 h-2 bg-[#6C2BD9] rounded-full'></div>
             <span className='font-semibold text-[#CCCCCC] text-sm'>
-              USER: <span className='text-[#888888]'>N/A</span>
+              USER:{" "}
+              <span className='text-[#888888]'>
+                {user ? `${user?.first_name} ${user?.last_name}` : "N/A"}
+              </span>
             </span>
           </div>
         </div>
 
         {/* Login Button */}
-        <PrimaryBTN onClickFunc={handleLogin} text={"Login"} disabled={false} />
+        <PrimaryBTN
+          onClickFunc={token ? handleLogout : handleLogin}
+          text={token ? "Logout" : "Login"}
+          disabled={false}
+        />
       </div>
     </header>
   );
