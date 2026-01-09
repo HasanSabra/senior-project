@@ -2,36 +2,6 @@ const Election = require("../models/Election.model");
 const Candidate = require("../models/Candidate.model");
 const User = require("../models/User.model");
 
-const broadcastVoteCast = async (
-  election_id,
-  user_id,
-  candidate_id = null,
-  list_id = null,
-) => {
-  try {
-    if (global.io) {
-      const results = await Election.getResults(election_id);
-      global.io.to(`election:${election_id}`).emit("vote-casted", {
-        election_id,
-        user_id,
-        candidate_id,
-        list_id,
-        timestamp: new Date(),
-        total_votes: results.statistics?.total_votes || 0,
-      });
-
-      // Trigger immediate results update
-      global.io.to(`election:${election_id}`).emit("results-update", {
-        election_id,
-        results,
-        timestamp: new Date(),
-      });
-    }
-  } catch (err) {
-    console.error("Error broadcasting vote:", err);
-  }
-};
-
 exports.getData = async (req, res) => {
   try {
     const { election_id } = req.params;
@@ -55,7 +25,7 @@ exports.hasVoted = async (req, res) => {
     const hasVoted = await User.hasVoted(user_id, election_id);
     if (hasVoted) {
       return res
-        .status(400)
+        .status(200)
         .json({ hasVoted: true, message: "User has already voted" });
     }
 
@@ -101,10 +71,12 @@ exports.mayoralCastVote = async (req, res) => {
     }
 
     for (const candidate of candidates) {
+      console.log("Checking candidate:", candidate);
       const isCandidateExists = await Candidate.isExists(
         candidate,
         election_id,
       );
+      console.log("Candidate exists:", isCandidateExists);
       if (!isCandidateExists) {
         return res.status(400).json({
           success: false,
@@ -122,9 +94,6 @@ exports.mayoralCastVote = async (req, res) => {
         });
       }
     }
-
-    // Broadcast the vote
-    await broadcastVoteCast(election_id, user_id, candidate_id, list_id);
 
     const setVoted = await User.setVoted(user_id, election_id);
     if (!setVoted) {
@@ -196,9 +165,6 @@ exports.municipalityCastVote = async (req, res) => {
         });
       }
     }
-
-    // Broadcast the vote
-    await broadcastVoteCast(election_id, user_id, candidate_id, list_id);
 
     const setVoted = await User.setVoted(user_id, election_id);
     if (!setVoted) {
@@ -276,9 +242,6 @@ exports.parliamentaryCastVote = async (req, res) => {
       });
     }
 
-    // Broadcast the vote
-    await broadcastVoteCast(election_id, user_id, candidate_id, list_id);
-
     const setVoted = await User.setVoted(user_id, election_id);
     if (!setVoted) {
       return res
@@ -342,9 +305,6 @@ exports.speakerCastVote = async (req, res) => {
         message: `Failed to cast vote for candidate: ${candidate}`,
       });
     }
-
-    // Broadcast the vote
-    await broadcastVoteCast(election_id, user_id, candidate_id, list_id);
 
     const setVoted = await User.setVoted(user_id, election_id);
     if (!setVoted) {

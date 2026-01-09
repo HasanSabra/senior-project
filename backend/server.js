@@ -14,7 +14,7 @@ app.use(
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    allowedHeaders: ["Content-Type"],
   }),
 );
 
@@ -26,7 +26,8 @@ const authRoutes = require("./authentication/routes/auth.route");
 const voteRoutes = require("./voting/routes/user.route");
 const electionAdminRoutes = require("./elections/routes/admin.route");
 const electionUsersRoutes = require("./elections/routes/user.route");
-// const resultRoutes = require("./results/routes/result.routes");
+const resultAdminRoutes = require("./results/routes/admin.routes");
+const resultUsersRoutes = require("./results/routes/users.routes");
 const candidateAdminRoutes = require("./candidates/routes/admin.route");
 const candidateUsersRoutes = require("./candidates/routes/request.route");
 const listAdminRoutes = require("./lists/routes/admin.route");
@@ -35,18 +36,19 @@ const userAdminRoutes = require("./users/routes/admin.route");
 
 // Use routes
 app.use("/api/auth", authRoutes);
-app.use("/api/vote", voteRoutes);
+app.use("/api/admin/users", userAdminRoutes);
 app.use("/api/admin/elections", electionAdminRoutes);
 app.use("/api/users/elections", electionUsersRoutes);
-// app.use("/api/results", resultRoutes);
-app.use("/api/admin/candidates", candidateAdminRoutes);
-app.use("/api/users/candidates", candidateUsersRoutes);
 app.use("/api/admin/lists", listAdminRoutes);
 app.use("/api/users/lists", listUsersRoutes);
-app.use("/api/admin/users", userAdminRoutes);
+app.use("/api/admin/candidates", candidateAdminRoutes);
+app.use("/api/users/candidates", candidateUsersRoutes);
+app.use("/api/users/vote", voteRoutes);
+app.use("/api/admin/results", resultAdminRoutes);
+app.use("/api/users/results", resultUsersRoutes);
 
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`
   Server running on port ${PORT}
   Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:3000"}

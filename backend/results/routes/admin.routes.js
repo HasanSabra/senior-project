@@ -1,42 +1,35 @@
 const express = require("express");
 
-const adminControllers = require("../controllers/admin.controller");
+const adminController = require("../controllers/admin.controller");
 
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");
 
 const router = express.Router();
+
 router.post(
-  "/",
+  "/calculate/municipality",
   authMiddleware,
   roleMiddleware("admin"),
-  adminControllers.createList,
+  adminController.calculateMunicipalityResults,
 );
-router.get(
-  "/",
+router.post(
+  "/calculate/mayoral",
   authMiddleware,
   roleMiddleware("admin"),
-  adminControllers.getAllLists,
+  adminController.calculateMayoralResults,
 );
-
-router.get(
-  "/:election_id",
+router.post(
+  "/calculate/parliamentary",
   authMiddleware,
   roleMiddleware("admin"),
-  adminControllers.getListsByElectionId,
+  adminController.calculateParliamentaryResults,
 );
-
-router.put(
-  "/:list_id",
+router.post(
+  "/calculate/speaker",
   authMiddleware,
   roleMiddleware("admin"),
-  adminControllers.updateList,
-);
-router.delete(
-  "/:list_id",
-  authMiddleware,
-  roleMiddleware("admin"),
-  adminControllers.deleteList,
+  adminController.calcuateSpeakerResults,
 );
 
 module.exports = router;

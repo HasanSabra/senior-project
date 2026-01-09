@@ -82,6 +82,24 @@ exports.getAllLists = async (req, res) => {
   }
 };
 
+exports.getListsByElectionId = async (req, res) => {
+  try {
+    const { election_id } = req.params;
+    const lists = await List.getByElectionId(election_id);
+
+    return res.status(200).json({
+      success: true,
+      data: lists,
+    });
+  } catch (err) {
+    console.error("Error fetching lists by election ID:", err);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching the lists by election ID.",
+    });
+  }
+};
+
 exports.updateList = async (req, res) => {
   try {
     const { list_id } = req.params;

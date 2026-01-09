@@ -1,5 +1,38 @@
 const Candidate = require("../models/Candidate.models");
 
+const db = require("../config/db");
+const dbPromise = db.promise();
+
+exports.getExistingRequest = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { election_id } = req.params; // FIXED: Changed from req.query to req.params
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const existingRequest = await Candidate.findExistingRequest(
+      userId,
+      election_id,
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: existingRequest,
+    });
+  } catch (err) {
+    console.error("Error checking existing request:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 exports.cancelRequest = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -129,6 +162,85 @@ exports.sendRequest = async (req, res) => {
       ...(process.env.NODE_ENV === "development" && {
         debug: err.message,
       }),
+    });
+  }
+};
+
+exports.getElections = async (req, res) => {
+  try {
+    const [elections] = await dbPromise.query(
+      "SELECT * FROM elections WHERE is_active = 0;",
+    );
+    if (elections.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No elections are found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: elections,
+    });
+  } catch (error) {
+    console.error("Error while fetching elections: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occured while getting elections.",
+    });
+  }
+};
+
+exports.getLists = async (req, res) => {
+  try {
+    const [lists] = await dbPromise.query("SELECT * FROM LISTS;");
+    if (lists.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No lists found.",
+      });
+    }
+
+    return res.status(200).json({
+      // FIXED: Changed from res.json(200).json() to res.status(200).json()
+      success: true,
+      data: lists,
+    });
+  } catch (error) {
+    console.error("Error occured while fetching lists: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occured while fetching lists.",
+    });
+  }
+};
+
+exports.getListsByElection = async (req, res) => {
+  try {
+    const { electionId } = req.params;
+
+    const [lists] = await dbPromise.query(
+      "SELECT id, name FROM lists WHERE election_id = ?;",
+      [electionId],
+    );
+
+    if (lists.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: "No lists found for this election",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: lists,
+    });
+  } catch (error) {
+    console.error("Error occurred while fetching lists: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred while fetching lists.",
     });
   }
 };

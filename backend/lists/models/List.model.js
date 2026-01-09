@@ -44,6 +44,13 @@ const List = {
     const [rows] = await dbPromise.query("SELECT * FROM lists");
     return rows;
   },
+  getByElectionId: async (election_id) => {
+    const [rows] = await dbPromise.query(
+      "SELECT * FROM lists WHERE election_id = ?",
+      [election_id],
+    );
+    return rows;
+  },
   update: async (
     list_id,
     name,

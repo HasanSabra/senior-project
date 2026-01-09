@@ -29,6 +29,9 @@ const Election = {
                 'list_name', l.name,
                 'list_description', l.description,
                 'seats_number', l.seats_number,
+                'constituency_id', l.constituency_id,
+                'district_id', l.district_id,
+                'village_id', l.village_id,
                 'candidates', (
                   SELECT JSON_ARRAYAGG(
                     JSON_OBJECT(
@@ -36,7 +39,9 @@ const Election = {
                       'first_name', u2.first_name,
                       'last_name', u2.last_name,
                       'experience', c2.experience,
-                      'denomination', d2.name
+                      'qual_edu', c2.qual_edu,
+                      'denomination', d2.name,
+                      'village_id', u2.village_id
                     )
                   )
                   FROM candidates c2

@@ -1124,22 +1124,22 @@ const villages = [
 ];
 
 const electionTypes = [
-  { id: 1, type: "Mayoral" },
-  { id: 2, type: "Municipal" },
-  { id: 3, type: "Parliamentary" },
-  { id: 4, type: "Speaker" },
+  { id: 1, name: "Mayoral" },
+  { id: 2, name: "Municipality" },
+  { id: 3, name: "Parliamentary" },
+  { id: 4, name: "Speaker" },
 ];
 
 const genders = [
-  { id: 1, type: "male" },
-  { id: 2, type: "female" },
+  { id: 1, name: "male" },
+  { id: 2, name: "female" },
 ];
 
 const maritalStatuses = [
-  { id: 1, status: "single" },
-  { id: 2, status: "married" },
-  { id: 3, status: "divorced" },
-  { id: 4, status: "windowed" },
+  { id: 1, name: "single" },
+  { id: 2, name: "married" },
+  { id: 3, name: "divorced" },
+  { id: 4, name: "windowed" },
 ];
 
 const religions = [

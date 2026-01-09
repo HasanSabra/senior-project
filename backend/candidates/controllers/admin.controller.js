@@ -124,6 +124,36 @@ exports.getAllCandidates = async (req, res) => {
   }
 };
 
+exports.getCandidatesByStatus = async (req, res) => {
+  try {
+    const { status } = req.params;
+
+    if (!["pending", "approved", "rejected", "all"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status. Must be: pending, approved, rejected, or all",
+      });
+    }
+
+    const candidates =
+      status === "all"
+        ? await Candidate.getAllCandidates()
+        : await Candidate.getCandidatesByStatus(status);
+
+    return res.status(200).json({
+      success: true,
+      message: `${status} candidates retrieved successfully`,
+      data: candidates,
+    });
+  } catch (err) {
+    console.error("Error retrieving candidates by status:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 exports.updateCandidate = async (req, res) => {
   try {
     const candidateId = parseInt(req.params.id);

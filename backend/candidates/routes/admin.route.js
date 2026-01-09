@@ -19,19 +19,25 @@ router.get(
   roleMiddleware("admin"),
   admin.getAllCandidates,
 );
+router.get(
+  "/status/:status",
+  authMiddleware,
+  roleMiddleware("admin"),
+  admin.getCandidatesByStatus,
+);
 router.put(
   "/:id",
   authMiddleware,
   roleMiddleware("admin"),
   admin.updateCandidate,
 );
-router.post(
+router.put(
   "/approve/:id",
   authMiddleware,
   roleMiddleware("admin"),
   admin.approveRequest,
 );
-router.post(
+router.put(
   "/deny/:id",
   authMiddleware,
   roleMiddleware("admin"),
